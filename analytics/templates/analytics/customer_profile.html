@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {{ customer.name }} | Customer Profile | CustomerSeg
+    </title>
+
+    <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .navbar {
+            width: 100%;
+            min-height: 64px;
+
+            background: #ffffff;
+
+            border-bottom: 1px solid #e5e9f2;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 32px;
+
+            position: sticky;
+            top: 0;
+
+            z-index: 1000;
+        }
+
+        .brand {
+            font-size: 20px;
+            font-weight: 800;
+
+            color: #111827;
+
+            letter-spacing: -0.5px;
+        }
+
+        .brand span {
+            color: #4f46e5;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            padding: 9px 14px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            color: #64748b;
+
+            transition:
+                background 0.2s ease,
+                color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background: #f1f5f9;
+            color: #111827;
+        }
+
+        .nav-link.active {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        .page {
+            width: 100%;
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding: 34px 28px 55px;
+        }
+
+
+        /* =========================================================
+           BACK LINK
+        ========================================================= */
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 22px;
+
+            color: #4f46e5;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           PROFILE HEADER
+        ========================================================= */
+
+        .profile-header {
+            background: #ffffff;
+
+            border: 1px solid #e6eaf1;
+
+            border-radius: 18px;
+
+            padding: 28px;
+
+            box-shadow:
+                0 4px 18px rgba(15, 23, 42, 0.05);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 25px;
+
+            margin-bottom: 28px;
+        }
+
+        .profile-main {
+            display: flex;
+            align-items: center;
+
+            gap: 18px;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+
+            flex-shrink: 0;
+
+            border-radius: 18px;
+
+            background: #eef2ff;
+            color: #4f46e5;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .profile-name {
+            margin: 0;
+
+            font-size: 28px;
+            font-weight: 800;
+
+            color: #111827;
+
+            letter-spacing: -0.7px;
+        }
+
+        .profile-id {
+            margin-top: 7px;
+
+            font-size: 13px;
+
+            color: #64748b;
+
+            line-height: 1.7;
+        }
+
+        .profile-category {
+            display: inline-flex;
+
+            padding: 9px 14px;
+
+            border-radius: 999px;
+
+            background: #f1f5f9;
+            color: #475569;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           SECTION
+        ========================================================= */
+
+        .section {
+            margin-top: 28px;
+        }
+
+        .section-header {
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            margin: 0;
+
+            font-size: 18px;
+            font-weight: 800;
+
+            color: #172033;
+        }
+
+        .section-description {
+            margin: 5px 0 0;
+
+            font-size: 12px;
+
+            color: #7b8798;
+        }
+
+
+        /* =========================================================
+           METRIC GRID
+        ========================================================= */
+
+        .metrics-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: #ffffff;
+
+            border: 1px solid #e6eaf1;
+
+            border-radius: 14px;
+
+            padding: 20px;
+
+            box-shadow:
+                0 3px 12px rgba(15, 23, 42, 0.04);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 8px 22px rgba(15, 23, 42, 0.07);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            font-weight: 600;
+
+            color: #718096;
+
+            margin-bottom: 9px;
+        }
+
+        .metric-value {
+            font-size: 22px;
+            font-weight: 800;
+
+            color: #111827;
+
+            letter-spacing: -0.4px;
+        }
+
+        .metric-subtitle {
+            margin-top: 6px;
+
+            font-size: 11px;
+
+            color: #94a3b8;
+        }
+
+
+        /* =========================================================
+           INFORMATION GRID
+        ========================================================= */
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+        .info-card {
+            background: #ffffff;
+
+            border: 1px solid #e6eaf1;
+
+            border-radius: 14px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 3px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .info-card-title {
+            margin: 0 0 17px;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            color: #172033;
+        }
+
+        .info-row {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 20px;
+
+            padding: 11px 0;
+
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 12px;
+
+            color: #718096;
+        }
+
+        .info-value {
+            font-size: 13px;
+            font-weight: 700;
+
+            color: #172033;
+
+            text-align: right;
+        }
+
+
+        /* =========================================================
+           SEGMENT BADGES
+        ========================================================= */
+
+        .segment-badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            padding: 6px 10px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            max-width: 220px;
+
+            text-align: center;
+        }
+
+        .rfm-badge {
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .ml-badge {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .cluster-badge {
+            background: #fff7ed;
+            color: #c2410c;
+        }
+
+
+        /* =========================================================
+           RFM SCORE GRID
+        ========================================================= */
+
+        .rfm-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 14px;
+        }
+
+        .rfm-card {
+            background: #ffffff;
+
+            border: 1px solid #e6eaf1;
+
+            border-radius: 14px;
+
+            padding: 18px;
+
+            box-shadow:
+                0 3px 12px rgba(15, 23, 42, 0.04);
+
+            text-align: center;
+        }
+
+        .rfm-card-label {
+            font-size: 11px;
+
+            color: #718096;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+        }
+
+        .rfm-card-value {
+            font-size: 22px;
+
+            font-weight: 800;
+
+            color: #111827;
+        }
+
+        .rfm-card-description {
+            margin-top: 5px;
+
+            font-size: 10px;
+
+            color: #94a3b8;
+        }
+
+
+        /* =========================================================
+           ANALYSIS GRID
+        ========================================================= */
+
+        .analysis-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+        .analysis-card {
+            background: #ffffff;
+
+            border: 1px solid #e6eaf1;
+
+            border-radius: 14px;
+
+            padding: 21px;
+
+            box-shadow:
+                0 3px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .analysis-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: #eef2ff;
+            color: #4f46e5;
+
+            font-size: 17px;
+            font-weight: 800;
+
+            margin-bottom: 13px;
+        }
+
+        .analysis-title {
+            font-size: 13px;
+            font-weight: 800;
+
+            color: #172033;
+
+            margin-bottom: 7px;
+        }
+
+        .analysis-text {
+            font-size: 12px;
+
+            line-height: 1.7;
+
+            color: #7b8798;
+        }
+
+
+        /* =========================================================
+           INSIGHT
+        ========================================================= */
+
+        .insight-box {
+            background: #ffffff;
+
+            border: 1px solid #e6eaf1;
+
+            border-left: 4px solid #4f46e5;
+
+            border-radius: 14px;
+
+            padding: 23px;
+
+            box-shadow:
+                0 3px 12px rgba(15, 23, 42, 0.04);
+        }
+
+        .insight-heading {
+            font-size: 14px;
+            font-weight: 800;
+
+            color: #172033;
+
+            margin-bottom: 9px;
+        }
+
+        .insight-content {
+            font-size: 13px;
+
+            line-height: 1.75;
+
+            color: #64748b;
+        }
+
+
+        /* =========================================================
+           STATUS MESSAGE
+        ========================================================= */
+
+        .not-available {
+            color: #94a3b8;
+
+            font-weight: 500;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        .footer {
+            margin-top: 40px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #e5e9f2;
+
+            display: flex;
+
+            justify-content: center;
+
+            font-size: 11px;
+
+            color: #94a3b8;
+        }
+
+
+        /* =========================================================
+           TABLET
+        ========================================================= */
+
+        @media (max-width: 1000px) {
+
+            .metrics-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .rfm-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .analysis-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        /* =========================================================
+           MOBILE
+        ========================================================= */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                height: auto;
+
+                min-height: 60px;
+
+                padding: 12px 16px;
+
+                flex-direction: column;
+
+                gap: 10px;
+            }
+
+            .nav-links {
+                width: 100%;
+
+                justify-content: center;
+
+                flex-wrap: wrap;
+            }
+
+            .nav-link {
+                font-size: 11px;
+
+                padding: 7px 10px;
+            }
+
+            .page {
+                padding: 24px 15px 40px;
+            }
+
+            .profile-header {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+            .profile-name {
+                font-size: 23px;
+            }
+
+            .profile-avatar {
+                width: 60px;
+                height: 60px;
+
+                font-size: 22px;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .rfm-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .analysis-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        /* =========================================================
+           SMALL MOBILE
+        ========================================================= */
+
+        @media (max-width: 430px) {
+
+            .rfm-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-main {
+                align-items: flex-start;
+            }
+
+            .profile-id {
+                font-size: 11px;
+            }
+
+            .info-row {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .info-value {
+                text-align: left;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="navbar">
+
+    <a
+        href="/analytics/"
+        class="brand"
+    >
+        Customer<span>Seg</span>
+    </a>
+
+
+    <div class="nav-links">
+
+        <a
+            href="/analytics/"
+            class="nav-link"
+        >
+            Dashboard
+        </a>
+
+
+        <a
+            href="/analytics/customers/"
+            class="nav-link active"
+        >
+            Customer Explorer
+        </a>
+
+
+        <a
+            href="/analytics/#analytics"
+            class="nav-link"
+        >
+            Analytics
+        </a>
+
+
+        <a
+            href="/admin/"
+            class="nav-link"
+        >
+            Admin
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================================================
+     MAIN PAGE
+========================================================= -->
+
+<main class="page">
+
+
+    <!-- =====================================================
+         BACK
+    ====================================================== -->
+
+    <a
+        href="/analytics/customers/"
+        class="back-link"
+    >
+        ← Back to Customer Explorer
+    </a>
+
+
+    <!-- =====================================================
+         PROFILE HEADER
+    ====================================================== -->
+
+    <section class="profile-header">
+
+        <div class="profile-main">
+
+
+            <div class="profile-avatar">
+
+                {{ customer.name|first|upper }}
+
+            </div>
+
+
+            <div>
+
+                <h1 class="profile-name">
+
+                    {{ customer.name }}
+
+                </h1>
+
+
+                <div class="profile-id">
+
+                    Customer ID:
+                    <strong>
+                        {{ customer.customer_id }}
+                    </strong>
+
+                    &nbsp;·&nbsp;
+
+                    Age:
+                    <strong>
+                        {{ customer.age }}
+                    </strong>
+
+                    &nbsp;·&nbsp;
+
+                    {% if customer.gender %}
+                        {{ customer.gender }}
+                    {% else %}
+                        Gender not specified
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        {% if customer.preferred_category %}
+
+            <div class="profile-category">
+
+                {{ customer.preferred_category }}
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- =====================================================
+         CUSTOMER PERFORMANCE
+    ====================================================== -->
+
+    <section class="section">
+
+
+        <div class="section-header">
+
+            <h2 class="section-title">
+                Customer Performance
+            </h2>
+
+            <p class="section-description">
+                Key financial, purchasing and satisfaction
+                indicators for this customer.
+            </p>
+
+        </div>
+
+
+        <div class="metrics-grid">
+
+
+            <!-- Total Spending -->
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Total Spending
+                </div>
+
+                <div class="metric-value">
+
+                    ₹{{ customer.total_spending|floatformat:2 }}
+
+                </div>
+
+                <div class="metric-subtitle">
+                    Customer spending
+                </div>
+
+            </div>
+
+
+            <!-- Purchase Frequency -->
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Purchase Frequency
+                </div>
+
+                <div class="metric-value">
+
+                    {{ customer.purchase_frequency }}
+
+                </div>
+
+                <div class="metric-subtitle">
+                    Total purchases
+                </div>
+
+            </div>
+
+
+            <!-- Satisfaction -->
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Satisfaction
+                </div>
+
+                <div class="metric-value">
+
+                    {% if customer.customer_satisfaction is not None %}
+
+                        {{ customer.customer_satisfaction|floatformat:1 }}/10
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </div>
+
+                <div class="metric-subtitle">
+                    Customer satisfaction
+                </div>
+
+            </div>
+
+
+            <!-- Annual Income -->
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Annual Income
+                </div>
+
+                <div class="metric-value">
+
+                    ₹{{ customer.annual_income|floatformat:2 }}
+
+                </div>
+
+                <div class="metric-subtitle">
+                    Reported annual income
+                </div>
+
+            </div>
+
+
+            <!-- Average Order Value -->
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Average Order Value
+                </div>
+
+                <div class="metric-value">
+
+                    ₹{{ customer.average_order_value|floatformat:2 }}
+
+                </div>
+
+                <div class="metric-subtitle">
+                    Average value per order
+                </div>
+
+            </div>
+
+
+            <!-- Discount Usage -->
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Discount Usage
+                </div>
+
+                <div class="metric-value">
+
+                    {{ customer.discount_usage|floatformat:1 }}
+
+                </div>
+
+                <div class="metric-subtitle">
+                    Discount usage metric
+                </div>
+
+            </div>
+
+
+            <!-- Last Purchase -->
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Last Purchase
+                </div>
+
+                <div class="metric-value">
+
+                    {% if customer.last_purchase_date %}
+
+                        {{ customer.last_purchase_date|date:"d M Y" }}
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </div>
+
+                <div class="metric-subtitle">
+                    Most recent purchase date
+                </div>
+
+            </div>
+
+
+            <!-- Category -->
+
+            <div class="metric-card">
+
+                <div class="metric-label">
+                    Preferred Category
+                </div>
+
+                <div class="metric-value">
+
+                    {% if customer.preferred_category %}
+
+                        {{ customer.preferred_category }}
+
+                    {% else %}
+
+                        N/A
+
+                    {% endif %}
+
+                </div>
+
+                <div class="metric-subtitle">
+                    Preferred product category
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CUSTOMER INFORMATION
+    ====================================================== -->
+
+    <section class="section">
+
+
+        <div class="section-header">
+
+            <h2 class="section-title">
+                Customer Information
+            </h2>
+
+            <p class="section-description">
+                Personal information and segmentation details.
+            </p>
+
+        </div>
+
+
+        <div class="info-grid">
+
+
+            <!-- =================================================
+                 PERSONAL INFORMATION
+            ================================================== -->
+
+            <div class="info-card">
+
+                <h3 class="info-card-title">
+                    Personal Information
+                </h3>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Customer ID
+                    </span>
+
+                    <span class="info-value">
+                        {{ customer.customer_id }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Name
+                    </span>
+
+                    <span class="info-value">
+                        {{ customer.name }}
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Age
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if customer.age is not None %}
+                            {{ customer.age }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Gender
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if customer.gender %}
+                            {{ customer.gender }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Annual Income
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if customer.annual_income is not None %}
+                            ₹{{ customer.annual_income|floatformat:2 }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Preferred Category
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if customer.preferred_category %}
+
+                            {{ customer.preferred_category }}
+
+                        {% else %}
+
+                            <span class="not-available">
+                                Not specified
+                            </span>
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SEGMENTATION
+            ================================================== -->
+
+            <div class="info-card">
+
+                <h3 class="info-card-title">
+                    Customer Segmentation
+                </h3>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        RFM Segment
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if rfm_segment %}
+
+                            <span class="segment-badge rfm-badge">
+                                {{ rfm_segment }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="not-available">
+                                Not available
+                            </span>
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Machine Learning Segment
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if ml_segment %}
+
+                            <span class="segment-badge ml-badge">
+                                {{ ml_segment }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="not-available">
+                                Not available
+                            </span>
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        ML Cluster
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if ml_cluster is not None %}
+
+                            <span class="segment-badge cluster-badge">
+                                Cluster {{ ml_cluster }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="not-available">
+                                Not available
+                            </span>
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Total Spending
+                    </span>
+
+                    <span class="info-value">
+
+                        ₹{{ customer.total_spending|floatformat:2 }}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Purchase Frequency
+                    </span>
+
+                    <span class="info-value">
+
+                        {{ customer.purchase_frequency }}
+
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Satisfaction
+                    </span>
+
+                    <span class="info-value">
+
+                        {% if customer.customer_satisfaction is not None %}
+
+                            {{ customer.customer_satisfaction|floatformat:1 }}/10
+
+                        {% else %}
+
+                            N/A
+
+                        {% endif %}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RFM ANALYSIS
+    ====================================================== -->
+
+    <section class="section">
+
+
+        <div class="section-header">
+
+            <h2 class="section-title">
+                RFM Analysis
+            </h2>
+
+            <p class="section-description">
+                Recency, frequency and monetary-value indicators
+                used for customer segmentation.
+            </p>
+
+        </div>
+
+
+        <div class="rfm-grid">
+
+
+            <!-- Recency -->
+
+            <div class="rfm-card">
+
+                <div class="rfm-card-label">
+                    RECENCY
+                </div>
+
+                <div class="rfm-card-value">
+
+                    {% if recency is not None %}
+                        {{ recency }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+
+                </div>
+
+                <div class="rfm-card-description">
+                    Days since last purchase
+                </div>
+
+            </div>
+
+
+            <!-- Frequency -->
+
+            <div class="rfm-card">
+
+                <div class="rfm-card-label">
+                    FREQUENCY
+                </div>
+
+                <div class="rfm-card-value">
+
+                    {% if frequency is not None %}
+                        {{ frequency }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+
+                </div>
+
+                <div class="rfm-card-description">
+                    Purchase frequency
+                </div>
+
+            </div>
+
+
+            <!-- Monetary -->
+
+            <div class="rfm-card">
+
+                <div class="rfm-card-label">
+                    MONETARY
+                </div>
+
+                <div class="rfm-card-value">
+
+                    {% if monetary is not None %}
+                        ₹{{ monetary|floatformat:2 }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+
+                </div>
+
+                <div class="rfm-card-description">
+                    Monetary value
+                </div>
+
+            </div>
+
+
+            <!-- RFM Total -->
+
+            <div class="rfm-card">
+
+                <div class="rfm-card-label">
+                    RFM TOTAL
+                </div>
+
+                <div class="rfm-card-value">
+
+                    {% if rfm_total is not None %}
+                        {{ rfm_total }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+
+                </div>
+
+                <div class="rfm-card-description">
+                    Combined RFM score
+                </div>
+
+            </div>
+
+
+            <!-- R Score -->
+
+            <div class="rfm-card">
+
+                <div class="rfm-card-label">
+                    R SCORE
+                </div>
+
+                <div class="rfm-card-value">
+
+                    {% if r_score is not None %}
+                        {{ r_score }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+
+                </div>
+
+                <div class="rfm-card-description">
+                    Recency score
+                </div>
+
+            </div>
+
+
+            <!-- F Score -->
+
+            <div class="rfm-card">
+
+                <div class="rfm-card-label">
+                    F SCORE
+                </div>
+
+                <div class="rfm-card-value">
+
+                    {% if f_score is not None %}
+                        {{ f_score }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+
+                </div>
+
+                <div class="rfm-card-description">
+                    Frequency score
+                </div>
+
+            </div>
+
+
+            <!-- M Score -->
+
+            <div class="rfm-card">
+
+                <div class="rfm-card-label">
+                    M SCORE
+                </div>
+
+                <div class="rfm-card-value">
+
+                    {% if m_score is not None %}
+                        {{ m_score }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+
+                </div>
+
+                <div class="rfm-card-description">
+                    Monetary score
+                </div>
+
+            </div>
+
+
+            <!-- RFM Segment -->
+
+            <div class="rfm-card">
+
+                <div class="rfm-card-label">
+                    SEGMENT
+                </div>
+
+                <div
+                    class="rfm-card-value"
+                    style="font-size: 15px;"
+                >
+
+                    {% if rfm_segment %}
+                        {{ rfm_segment }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+
+                </div>
+
+                <div class="rfm-card-description">
+                    Assigned RFM segment
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CUSTOMER ANALYSIS
+    ====================================================== -->
+
+    <section class="section">
+
+
+        <div class="section-header">
+
+            <h2 class="section-title">
+                Customer Analysis
+            </h2>
+
+            <p class="section-description">
+                Behavioural interpretation based on the customer's
+                financial, purchasing and satisfaction metrics.
+            </p>
+
+        </div>
+
+
+        <div class="analysis-grid">
+
+
+            <!-- =================================================
+                 SPENDING ANALYSIS
+            ================================================== -->
+
+            <div class="analysis-card">
+
+                <div class="analysis-icon">
+                    ₹
+                </div>
+
+
+                <div class="analysis-title">
+                    Spending Behaviour
+                </div>
+
+
+                <div class="analysis-text">
+
+                    {% if customer.total_spending >= 50000 %}
+
+                        This customer has a high spending level
+                        and may represent a valuable customer
+                        opportunity.
+
+                    {% elif customer.total_spending >= 20000 %}
+
+                        This customer demonstrates a moderate
+                        spending level and may have potential for
+                        further engagement.
+
+                    {% else %}
+
+                        This customer currently has a relatively
+                        low spending level.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PURCHASE ANALYSIS
+            ================================================== -->
+
+            <div class="analysis-card">
+
+                <div class="analysis-icon">
+                    🛒
+                </div>
+
+
+                <div class="analysis-title">
+                    Purchase Activity
+                </div>
+
+
+                <div class="analysis-text">
+
+                    {% if customer.purchase_frequency >= 15 %}
+
+                        The customer shows frequent purchasing
+                        behaviour and appears highly active.
+
+                    {% elif customer.purchase_frequency >= 8 %}
+
+                        The customer has a moderate purchase
+                        frequency and demonstrates regular activity.
+
+                    {% else %}
+
+                        The customer's purchase frequency is
+                        relatively low and may benefit from
+                        targeted engagement.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 SATISFACTION ANALYSIS
+            ================================================== -->
+
+            <div class="analysis-card">
+
+                <div class="analysis-icon">
+                    ★
+                </div>
+
+
+                <div class="analysis-title">
+                    Satisfaction
+                </div>
+
+
+                <div class="analysis-text">
+
+                    {% if customer.customer_satisfaction is None %}
+
+                        No satisfaction rating has been provided
+                        for this customer.
+
+                    {% elif customer.customer_satisfaction >= 8 %}
+
+                        The customer reports high satisfaction,
+                        indicating a positive customer experience.
+
+                    {% elif customer.customer_satisfaction >= 6 %}
+
+                        The customer has a moderate satisfaction
+                        level and may have opportunities for
+                        improved engagement.
+
+                    {% else %}
+
+                        The customer's satisfaction is relatively
+                        low and may require attention.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CUSTOMER INSIGHT
+    ====================================================== -->
+
+    <section class="section">
+
+
+        <div class="insight-box">
+
+
+            <div class="insight-heading">
+                💡 Customer Insight
+            </div>
+
+
+            <div class="insight-content">
+
+                <strong>
+                    {{ customer.name }}
+                </strong>
+
+                is currently classified as
+
+
+                <strong>
+
+                    {% if rfm_segment %}
+                        {{ rfm_segment }}
+                    {% else %}
+                        an unclassified RFM segment
+                    {% endif %}
+
+                </strong>
+
+                through RFM analysis and
+
+
+                <strong>
+
+                    {% if ml_segment %}
+                        {{ ml_segment }}
+                    {% else %}
+                        an unclassified ML segment
+                    {% endif %}
+
+                </strong>
+
+                through machine-learning segmentation.
+
+
+                The customer has spent
+
+
+                <strong>
+                    ₹{{ customer.total_spending|floatformat:2 }}
+                </strong>
+
+
+                across
+
+
+                <strong>
+                    {{ customer.purchase_frequency }}
+                </strong>
+
+
+                purchases.
+
+
+                {% if customer.customer_satisfaction is not None %}
+
+                    The reported satisfaction rating is
+
+
+                    <strong>
+                        {{ customer.customer_satisfaction|floatformat:1 }}/10
+                    </strong>.
+
+                {% else %}
+
+                    No satisfaction rating has been provided.
+
+                {% endif %}
+
+
+                {% if rfm_total is not None %}
+
+                    The customer's combined RFM score is
+
+
+                    <strong>
+                        {{ rfm_total }}
+                    </strong>.
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        CustomerSeg · Customer Analytics & Segmentation
+
+    </footer>
+
+
+</main>
+
+
+</body>
+
+</html>

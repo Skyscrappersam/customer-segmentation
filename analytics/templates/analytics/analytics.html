@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        CustomerSeg - Advanced Analytics
+    </title>
+
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background:
+                #f8fafc;
+
+            color:
+                #111827;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* =================================================
+           NAVBAR
+           ================================================= */
+
+        .navbar {
+            width: 100%;
+
+            background:
+                #111827;
+
+            color:
+                white;
+
+            padding:
+                0 32px;
+
+            min-height:
+                68px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            gap: 20px;
+
+            position:
+                sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+            box-shadow:
+                0 2px 10px rgba(
+                    0,
+                    0,
+                    0,
+                    0.08
+                );
+        }
+
+        .brand {
+            color:
+                white;
+
+            font-size:
+                22px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                -0.4px;
+        }
+
+        .nav-links {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color:
+                #d1d5db;
+
+            padding:
+                10px 14px;
+
+            border-radius:
+                8px;
+
+            font-size:
+                14px;
+
+            font-weight:
+                600;
+
+            transition:
+                all 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            background:
+                #1f2937;
+
+            color:
+                white;
+        }
+
+        .nav-links a.active {
+            background:
+                #374151;
+
+            color:
+                white;
+        }
+
+        /* =================================================
+           PAGE
+           ================================================= */
+
+        .page {
+            max-width:
+                1500px;
+
+            margin:
+                0 auto;
+
+            padding:
+                36px 28px 60px;
+        }
+
+        .page-header {
+            margin-bottom:
+                30px;
+        }
+
+        .page-header h1 {
+            margin:
+                0 0 8px;
+
+            font-size:
+                34px;
+
+            line-height:
+                1.15;
+
+            letter-spacing:
+                -0.8px;
+        }
+
+        .page-header p {
+            margin:
+                0;
+
+            color:
+                #64748b;
+
+            font-size:
+                15px;
+
+            line-height:
+                1.6;
+        }
+
+        /* =================================================
+           STAT CARDS
+           ================================================= */
+
+        .stats-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap:
+                18px;
+
+            margin-bottom:
+                30px;
+        }
+
+        .stat-card {
+            background:
+                white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                14px;
+
+            padding:
+                22px;
+
+            box-shadow:
+                0 4px 18px rgba(
+                    15,
+                    23,
+                    42,
+                    0.05
+                );
+
+            min-width:
+                0;
+        }
+
+        .stat-label {
+            color:
+                #64748b;
+
+            font-size:
+                13px;
+
+            font-weight:
+                700;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                0.5px;
+
+            margin-bottom:
+                9px;
+        }
+
+        .stat-value {
+            font-size:
+                27px;
+
+            font-weight:
+                800;
+
+            color:
+                #111827;
+
+            word-break:
+                break-word;
+        }
+
+        .stat-description {
+            margin-top:
+                6px;
+
+            color:
+                #94a3b8;
+
+            font-size:
+                12px;
+        }
+
+        /* =================================================
+           SECTION
+           ================================================= */
+
+        .section {
+            margin-top:
+                30px;
+        }
+
+        .section-header {
+            margin-bottom:
+                16px;
+        }
+
+        .section-header h2 {
+            margin:
+                0 0 6px;
+
+            font-size:
+                22px;
+
+            letter-spacing:
+                -0.3px;
+        }
+
+        .section-header p {
+            margin:
+                0;
+
+            color:
+                #64748b;
+
+            font-size:
+                14px;
+
+            line-height:
+                1.5;
+        }
+
+        /* =================================================
+           CHART GRID
+           ================================================= */
+
+        .chart-grid {
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap:
+                24px;
+
+            align-items:
+                stretch;
+        }
+
+        .chart-card {
+            background:
+                white;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                16px;
+
+            padding:
+                14px;
+
+            min-width:
+                0;
+
+            min-height:
+                470px;
+
+            box-shadow:
+                0 4px 20px rgba(
+                    15,
+                    23,
+                    42,
+                    0.05
+                );
+
+            overflow:
+                hidden;
+        }
+
+        .chart-card.large {
+            min-height:
+                560px;
+        }
+
+        .chart {
+            width:
+                100%;
+
+            height:
+                440px;
+        }
+
+        .chart-card.large .chart {
+            height:
+                520px;
+        }
+
+        /* =================================================
+           INSIGHT BOX
+           ================================================= */
+
+        .info-box {
+            margin-top:
+                24px;
+
+            background:
+                #ffffff;
+
+            border:
+                1px solid #e5e7eb;
+
+            border-radius:
+                14px;
+
+            padding:
+                22px;
+
+            box-shadow:
+                0 4px 18px rgba(
+                    15,
+                    23,
+                    42,
+                    0.04
+                );
+        }
+
+        .info-box h3 {
+            margin:
+                0 0 10px;
+
+            font-size:
+                17px;
+        }
+
+        .info-box p {
+            margin:
+                0;
+
+            color:
+                #64748b;
+
+            line-height:
+                1.7;
+
+            font-size:
+                14px;
+        }
+
+        .bullet-list {
+            margin:
+                12px 0 0;
+
+            padding-left:
+                20px;
+
+            color:
+                #475569;
+
+            line-height:
+                1.8;
+
+            font-size:
+                14px;
+        }
+
+        /* =================================================
+           FOOTER
+           ================================================= */
+
+        .footer {
+            margin-top:
+                50px;
+
+            padding-top:
+                20px;
+
+            border-top:
+                1px solid #e5e7eb;
+
+            color:
+                #94a3b8;
+
+            text-align:
+                center;
+
+            font-size:
+                13px;
+        }
+
+        /* =================================================
+           RESPONSIVE
+           ================================================= */
+
+        @media (
+            max-width: 1100px
+        ) {
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+            .chart-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .chart-card.large {
+                min-height:
+                    500px;
+            }
+
+            .chart-card.large .chart {
+                height:
+                    460px;
+            }
+        }
+
+        @media (
+            max-width: 700px
+        ) {
+
+            .navbar {
+                padding:
+                    12px 16px;
+
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+            }
+
+            .nav-links {
+                width:
+                    100%;
+
+                overflow-x:
+                    auto;
+
+                flex-wrap:
+                    nowrap;
+
+                padding-bottom:
+                    4px;
+            }
+
+            .page {
+                padding:
+                    24px 14px 45px;
+            }
+
+            .page-header h1 {
+                font-size:
+                    28px;
+            }
+
+            .stats-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .chart-card {
+                min-height:
+                    430px;
+
+                padding:
+                    8px;
+            }
+
+            .chart {
+                height:
+                    390px;
+            }
+
+            .chart-card.large .chart {
+                height:
+                    420px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- =================================================
+         NAVBAR
+         ================================================= -->
+
+    <nav class="navbar">
+
+        <a
+            href="{% url 'analytics:dashboard' %}"
+            class="brand"
+        >
+            CustomerSeg
+        </a>
+
+        <div class="nav-links">
+
+            <a
+                href="{% url 'analytics:dashboard' %}"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="{% url 'analytics:customer_explorer' %}"
+            >
+                Customer Explorer
+            </a>
+
+            <a
+                href="{% url 'analytics:analytics_dashboard' %}"
+                class="active"
+            >
+                Analytics
+            </a>
+
+            <a
+                href="/admin/"
+            >
+                Admin
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =================================================
+         MAIN PAGE
+         ================================================= -->
+
+    <main class="page">
+
+        <header class="page-header">
+
+            <h1>
+                Advanced Customer Analytics
+            </h1>
+
+            <p>
+                Explore customer spending, income,
+                purchasing behaviour, satisfaction,
+                demographics and discount usage.
+            </p>
+
+        </header>
+
+
+        <!-- =================================================
+             STATISTICS
+             ================================================= -->
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Customers
+                </div>
+
+                <div class="stat-value">
+                    {{ total_customers|default:"0" }}
+                </div>
+
+                <div class="stat-description">
+                    Customers in the dataset
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Spending
+                </div>
+
+                <div class="stat-value">
+                    ₹{{ total_spending|default:"0"|floatformat:2 }}
+                </div>
+
+                <div class="stat-description">
+                    Combined customer spending
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Average Spending
+                </div>
+
+                <div class="stat-value">
+                    ₹{{ average_spending|default:"0"|floatformat:2 }}
+                </div>
+
+                <div class="stat-description">
+                    Average spending per customer
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Average Income
+                </div>
+
+                <div class="stat-value">
+                    ₹{{ average_income|default:"0"|floatformat:2 }}
+                </div>
+
+                <div class="stat-description">
+                    Average reported annual income
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             SPENDING ANALYSIS
+             ================================================= -->
+
+        <section class="section">
+
+            <div class="section-header">
+
+                <h2>
+                    Spending & Income Analysis
+                </h2>
+
+                <p>
+                    Understand how customer income,
+                    spending and purchasing behaviour
+                    relate to each other.
+                </p>
+
+            </div>
+
+
+            <div class="chart-grid">
+
+
+                <!-- Spending Distribution -->
+
+                <div class="chart-card">
+
+                    <div
+                        id="spending-distribution"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+
+                <!-- Income vs Spending Bubble Chart -->
+
+                <div class="chart-card large">
+
+                    <div
+                        id="income-spending"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+
+                <!-- Category Spending -->
+
+                <div class="chart-card">
+
+                    <div
+                        id="category-spending"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+
+                <!-- Purchase Frequency -->
+
+                <div class="chart-card">
+
+                    <div
+                        id="purchase-frequency"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             CUSTOMER BEHAVIOUR
+             ================================================= -->
+
+        <section class="section">
+
+            <div class="section-header">
+
+                <h2>
+                    Customer Behaviour
+                </h2>
+
+                <p>
+                    Analyse satisfaction, demographics,
+                    age and discount usage.
+                </p>
+
+            </div>
+
+
+            <div class="chart-grid">
+
+
+                <!-- Satisfaction -->
+
+                <div class="chart-card">
+
+                    <div
+                        id="satisfaction"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+
+                <!-- Gender -->
+
+                <div class="chart-card">
+
+                    <div
+                        id="gender"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+
+                <!-- Age -->
+
+                <div class="chart-card">
+
+                    <div
+                        id="age"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+
+                <!-- Discount -->
+
+                <div class="chart-card">
+
+                    <div
+                        id="discount"
+                        class="chart"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             BUBBLE CHART EXPLANATION
+             ================================================= -->
+
+        <section class="info-box">
+
+            <h3>
+                How to read the Income vs Spending chart
+            </h3>
+
+            <p>
+                Each bubble represents a customer.
+                The horizontal position represents annual
+                income, while the vertical position represents
+                total spending.
+            </p>
+
+            <ul class="bullet-list">
+
+                <li>
+                    <strong>Bubble size</strong>
+                    represents purchase frequency.
+                </li>
+
+                <li>
+                    <strong>Bubble colour</strong>
+                    represents customer satisfaction.
+                </li>
+
+                <li>
+                    The dashed vertical line represents
+                    median annual income.
+                </li>
+
+                <li>
+                    The dashed horizontal line represents
+                    median total spending.
+                </li>
+
+                <li>
+                    Hover over a bubble to see the customer's
+                    ID, category, income, spending,
+                    purchase frequency and satisfaction.
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
+
+        <footer class="footer">
+
+            CustomerSeg · Customer Analytics & Segmentation
+
+        </footer>
+
+    </main>
+
+
+    <!-- =================================================
+         PLOTLY DATA
+         ================================================= -->
+
+    <script>
+
+        const plotConfig = {
+            responsive: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: [
+                "lasso2d",
+                "select2d"
+            ]
+        };
+
+
+        function renderChart(
+            elementId,
+            chartData
+        ) {
+
+            const element =
+                document.getElementById(
+                    elementId
+                );
+
+            if (
+                !element ||
+                !chartData
+            ) {
+                return;
+            }
+
+            try {
+
+                const figure =
+                    JSON.parse(
+                        chartData
+                    );
+
+                Plotly.newPlot(
+                    element,
+                    figure.data || [],
+                    figure.layout || {},
+                    plotConfig
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Chart rendering error:",
+                    elementId,
+                    error
+                );
+
+            }
+
+        }
+
+
+        /* =================================================
+           RENDER ALL CHARTS
+           ================================================= */
+
+        renderChart(
+            "spending-distribution",
+            `{{ spending_distribution_chart|escapejs }}`
+        );
+
+
+        renderChart(
+            "income-spending",
+            `{{ income_spending_chart|escapejs }}`
+        );
+
+
+        renderChart(
+            "category-spending",
+            `{{ category_spending_chart|escapejs }}`
+        );
+
+
+        renderChart(
+            "purchase-frequency",
+            `{{ purchase_frequency_chart|escapejs }}`
+        );
+
+
+        renderChart(
+            "satisfaction",
+            `{{ satisfaction_chart|escapejs }}`
+        );
+
+
+        renderChart(
+            "gender",
+            `{{ gender_chart|escapejs }}`
+        );
+
+
+        renderChart(
+            "age",
+            `{{ age_chart|escapejs }}`
+        );
+
+
+        renderChart(
+            "discount",
+            `{{ discount_usage_chart|escapejs }}`
+        );
+
+
+        /* =================================================
+           RESIZE CHARTS WHEN WINDOW CHANGES
+           ================================================= */
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                const charts =
+                    document.querySelectorAll(
+                        ".chart"
+                    );
+
+                charts.forEach(
+                    function (chart) {
+
+                        if (
+                            chart &&
+                            chart.data
+                        ) {
+
+                            Plotly.Plots.resize(
+                                chart
+                            );
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>

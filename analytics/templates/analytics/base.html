@@ -1,0 +1,288 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+            CustomerSeg Analytics
+        {% endblock %}
+    </title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f3f4f6;
+
+            color: #111827;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+            background: #111827;
+
+            color: white;
+
+            padding: 0 30px;
+
+            min-height: 64px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 2px 8px rgba(
+                    0,
+                    0,
+                    0,
+                    0.15
+                );
+        }
+
+
+        .navbar-brand {
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 21px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+
+        .navbar-links {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+        }
+
+
+        .navbar-links a {
+            color: #d1d5db;
+
+            text-decoration: none;
+
+            padding: 10px 14px;
+
+            border-radius: 7px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition:
+                background 0.15s ease,
+                color 0.15s ease;
+        }
+
+
+        .navbar-links a:hover {
+            background: #1f2937;
+
+            color: white;
+        }
+
+
+        .navbar-links a.active {
+            background: #2563eb;
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+        .main-container {
+            width: 100%;
+
+            max-width: 1500px;
+
+            margin: 0 auto;
+
+            padding: 30px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE NAVBAR
+        ===================================================== */
+
+        @media (max-width: 800px) {
+
+            .navbar {
+                padding: 12px 18px;
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 10px;
+            }
+
+
+            .navbar-links {
+                width: 100%;
+
+                overflow-x: auto;
+
+                padding-bottom: 4px;
+            }
+
+
+            .navbar-links a {
+                white-space: nowrap;
+            }
+
+
+            .main-container {
+                padding: 20px 15px;
+            }
+
+        }
+
+
+        @media (max-width: 500px) {
+
+            .navbar-brand {
+                font-size: 18px;
+            }
+
+
+            .navbar-links {
+                gap: 4px;
+            }
+
+
+            .navbar-links a {
+                padding: 8px 10px;
+
+                font-size: 13px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVIGATION
+    ===================================================== -->
+
+    <nav class="navbar">
+
+
+        <!-- BRAND -->
+
+        <a
+            href="{% url 'analytics:dashboard' %}"
+            class="navbar-brand"
+        >
+            CustomerSeg
+        </a>
+
+
+        <!-- NAVIGATION LINKS -->
+
+        <div class="navbar-links">
+
+
+            <!-- DASHBOARD -->
+
+            <a
+                href="{% url 'analytics:dashboard' %}"
+                class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+            >
+                Dashboard
+            </a>
+
+
+            <!-- CUSTOMER EXPLORER -->
+
+            <a
+                href="{% url 'analytics:customer_explorer' %}"
+                class="{% if request.resolver_match.url_name == 'customer_explorer' or request.resolver_match.url_name == 'customer_profile' %}active{% endif %}"
+            >
+                Customer Explorer
+            </a>
+
+
+            <!-- ADVANCED ANALYTICS -->
+
+            <a
+                href="{% url 'analytics:analytics_dashboard' %}"
+                class="{% if request.resolver_match.url_name == 'analytics_dashboard' %}active{% endif %}"
+            >
+                Analytics
+            </a>
+
+
+            <!-- DJANGO ADMIN -->
+
+            <a
+                href="/admin/"
+            >
+                Admin
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ===================================================== -->
+
+    <main class="main-container">
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+
+</body>
+
+</html>
