@@ -1,7 +1,7 @@
-﻿import json
+﻿import csv
+import json
 from datetime import date, datetime
 from io import BytesIO
-import csv
 
 import numpy as np
 import pandas as pd
@@ -15,13 +15,13 @@ from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import (
-    getSampleStyleSheet,
     ParagraphStyle,
+    getSampleStyleSheet,
 )
 from reportlab.lib.units import mm
 from reportlab.platypus import (
-    SimpleDocTemplate,
     Paragraph,
+    SimpleDocTemplate,
     Spacer,
     Table,
     TableStyle,
@@ -31,12 +31,21 @@ from analytics.models import Customer
 
 from analytics.services.segmentation import generate_segments
 from analytics.services.ml_segmentation import (
-    run_kmeans,
     profile_clusters,
+    run_kmeans,
 )
 from analytics.services.cluster_labeling import (
     apply_cluster_labels,
 )
+
+
+# =========================================================
+# CONSTANTS
+# =========================================================
+
+ML_AT_RISK = "At Risk Customers"
+ML_HIGH_VALUE = "High-Value Customers"
+ML_REGULAR_ACTIVE = "Regular Active Customers"
 
 
 # =========================================================
@@ -45,8 +54,8 @@ from analytics.services.cluster_labeling import (
 
 def get_customer_queryset():
     """
-    Return all customers with calculated RFM and ML
-    segments attached dynamically.
+    Return all customers as a list with dynamically calculated
+    RFM and Machine Learning segmentation data attached.
     """
 
     customers = list(
@@ -61,7 +70,6 @@ def get_customer_queryset():
     # -----------------------------------------------------
 
     try:
-
         rfm_df = generate_segments()
 
         if (
@@ -69,7 +77,6 @@ def get_customer_queryset():
             and not rfm_df.empty
             and "customer_id" in rfm_df.columns
         ):
-
             rfm_lookup = {}
 
             for _, row in rfm_df.iterrows():
@@ -78,70 +85,54 @@ def get_customer_queryset():
                     row["customer_id"]
                 )
 
+                segment = row.get(
+                    "segment",
+                    ""
+                )
+
+                if pd.isna(segment):
+                    segment = ""
+
                 rfm_lookup[customer_id] = {
-                    "rfm_segment": (
-                        str(
-                            row.get(
-                                "segment",
-                                ""
-                            )
-                        )
-                        if pd.notna(
-                            row.get(
-                                "segment",
-                                None
-                            )
-                        )
-                        else ""
-                    ),
+                    "rfm_segment": str(segment),
 
                     "recency": row.get(
-                        "recency",
-                        None
+                        "recency"
                     ),
 
                     "frequency": row.get(
-                        "frequency",
-                        None
+                        "frequency"
                     ),
 
                     "monetary": row.get(
-                        "monetary",
-                        None
+                        "monetary"
                     ),
 
                     "R_score": row.get(
-                        "R_score",
-                        None
+                        "R_score"
                     ),
 
                     "F_score": row.get(
-                        "F_score",
-                        None
+                        "F_score"
                     ),
 
                     "M_score": row.get(
-                        "M_score",
-                        None
+                        "M_score"
                     ),
 
                     "RFM_score": row.get(
-                        "RFM_score",
-                        None
+                        "RFM_score"
                     ),
 
                     "RFM_total": row.get(
-                        "RFM_total",
-                        None
+                        "RFM_total"
                     ),
                 }
 
             for customer in customers:
 
                 data = rfm_lookup.get(
-                    str(
-                        customer.customer_id
-                    ),
+                    str(customer.customer_id),
                     {}
                 )
 
@@ -209,65 +200,45 @@ def get_customer_queryset():
     # -----------------------------------------------------
 
     try:
-
-        ml_df, ml_model = run_kmeans(
-            n_clusters=3
-        )
+        ml_df = get_ml_dataframe()
 
         if (
             ml_df is not None
             and not ml_df.empty
+            and "customer_id" in ml_df.columns
+            and "ml_segment" in ml_df.columns
         ):
+            ml_lookup = {}
 
-            profile = profile_clusters(
-                ml_df
-            )
+            for _, row in ml_df.iterrows():
 
-            ml_df = apply_cluster_labels(
-                ml_df,
-                profile
-            )
+                customer_id = str(
+                    row["customer_id"]
+                )
 
-            if (
-                "customer_id" in ml_df.columns
-                and "ml_segment" in ml_df.columns
-            ):
+                ml_segment = row.get(
+                    "ml_segment",
+                    ""
+                )
 
-                ml_lookup = {}
+                if pd.isna(ml_segment):
+                    ml_segment = ""
 
-                for _, row in ml_df.iterrows():
+                ml_lookup[customer_id] = str(
+                    ml_segment
+                )
 
-                    customer_id = str(
-                        row["customer_id"]
-                    )
+            for customer in customers:
 
-                    ml_segment = row.get(
-                        "ml_segment",
-                        ""
-                    )
+                customer.ml_segment = ml_lookup.get(
+                    str(customer.customer_id),
+                    ""
+                )
 
-                    ml_lookup[
-                        customer_id
-                    ] = (
-                        str(
-                            ml_segment
-                        )
-                        if pd.notna(
-                            ml_segment
-                        )
-                        else ""
-                    )
+        else:
 
-                for customer in customers:
-
-                    customer.ml_segment = (
-                        ml_lookup.get(
-                            str(
-                                customer.customer_id
-                            ),
-                            ""
-                        )
-                    )
+            for customer in customers:
+                customer.ml_segment = ""
 
     except Exception as error:
 
@@ -290,6 +261,9 @@ def apply_customer_filters(
     request,
     customers,
 ):
+    """
+    Apply all Customer Explorer filters to a customer list.
+    """
 
     # -----------------------------------------------------
     # SEARCH
@@ -585,63 +559,52 @@ def sort_customers(
     sort,
     direction,
 ):
+    """
+    Sort customers safely while preserving the existing
+    Customer Explorer behavior.
+    """
 
     allowed_fields = {
         "customer_id",
-        "-customer_id",
         "name",
-        "-name",
         "gender",
-        "-gender",
         "preferred_category",
-        "-preferred_category",
         "rfm_segment",
-        "-rfm_segment",
         "ml_segment",
-        "-ml_segment",
         "total_spending",
-        "-total_spending",
         "purchase_frequency",
-        "-purchase_frequency",
         "customer_satisfaction",
-        "-customer_satisfaction",
     }
 
-    field = sort
-
-    if direction == "desc":
-
-        if not field.startswith("-"):
-            field = "-" + field
-
-    else:
-
-        field = field.lstrip("-")
+    field = (
+        sort or "customer_id"
+    ).lstrip("-")
 
     if field not in allowed_fields:
-
         field = "customer_id"
 
-    reverse = field.startswith("-")
+    reverse = (
+        direction == "desc"
+    )
 
-    field_name = field.lstrip("-")
+    numeric_fields = {
+        "total_spending",
+        "purchase_frequency",
+        "customer_satisfaction",
+    }
 
     def sort_key(customer):
 
         value = getattr(
             customer,
-            field_name,
+            field,
             None
         )
 
-        if value is None:
-            return 0
+        if field in numeric_fields:
 
-        if field_name in {
-            "total_spending",
-            "purchase_frequency",
-            "customer_satisfaction",
-        }:
+            if value is None:
+                return 0.0
 
             try:
                 return float(value)
@@ -650,9 +613,14 @@ def sort_customers(
                 ValueError,
                 TypeError,
             ):
-                return 0
+                return 0.0
 
-        return str(value).lower()
+        if value is None:
+            return ""
+
+        return str(
+            value
+        ).strip().lower()
 
     return sorted(
         customers,
@@ -668,9 +636,12 @@ def sort_customers(
 def get_customer_statistics(
     customers=None,
 ):
+    """
+    Calculate customer statistics safely from either a
+    QuerySet or a filtered customer list.
+    """
 
     if customers is None:
-
         customers = Customer.objects.all()
 
     customers = list(
@@ -684,9 +655,14 @@ def get_customer_statistics(
 
     for customer in customers:
 
+        # -------------------------------------------------
+        # SPENDING
+        # -------------------------------------------------
+
         try:
 
             if customer.total_spending is not None:
+
                 spending.append(
                     float(
                         customer.total_spending
@@ -699,9 +675,14 @@ def get_customer_statistics(
         ):
             pass
 
+        # -------------------------------------------------
+        # FREQUENCY
+        # -------------------------------------------------
+
         try:
 
             if customer.purchase_frequency is not None:
+
                 frequency.append(
                     float(
                         customer.purchase_frequency
@@ -714,9 +695,14 @@ def get_customer_statistics(
         ):
             pass
 
+        # -------------------------------------------------
+        # SATISFACTION
+        # -------------------------------------------------
+
         try:
 
             if customer.customer_satisfaction is not None:
+
                 satisfaction.append(
                     float(
                         customer.customer_satisfaction
@@ -729,9 +715,14 @@ def get_customer_statistics(
         ):
             pass
 
+        # -------------------------------------------------
+        # INCOME
+        # -------------------------------------------------
+
         try:
 
             if customer.annual_income is not None:
+
                 income.append(
                     float(
                         customer.annual_income
@@ -750,9 +741,11 @@ def get_customer_statistics(
             len(customers),
 
         "total_spending":
-            sum(spending)
-            if spending
-            else 0,
+            (
+                sum(spending)
+                if spending
+                else 0
+            ),
 
         "average_spending":
             (
@@ -787,14 +780,18 @@ def get_customer_statistics(
             ),
 
         "maximum_spending":
-            max(spending)
-            if spending
-            else 0,
+            (
+                max(spending)
+                if spending
+                else 0
+            ),
 
         "minimum_spending":
-            min(spending)
-            if spending
-            else 0,
+            (
+                min(spending)
+                if spending
+                else 0
+            ),
     }
 
 
@@ -869,6 +866,9 @@ def get_filter_options():
 def get_segment_options(
     customers=None,
 ):
+    """
+    Return available RFM and ML segment names.
+    """
 
     if customers is None:
         customers = get_customer_queryset()
@@ -879,14 +879,14 @@ def get_segment_options(
                 getattr(
                     customer,
                     "rfm_segment",
-                    ""
+                    "",
                 )
             )
             for customer in customers
             if getattr(
                 customer,
                 "rfm_segment",
-                ""
+                "",
             )
         }
     )
@@ -897,14 +897,14 @@ def get_segment_options(
                 getattr(
                     customer,
                     "ml_segment",
-                    ""
+                    "",
                 )
             )
             for customer in customers
             if getattr(
                 customer,
                 "ml_segment",
-                ""
+                "",
             )
         }
     )
@@ -922,9 +922,11 @@ def get_segment_options(
 def get_customer_dataframe(
     customers=None,
 ):
+    """
+    Convert customer data into a pandas DataFrame.
+    """
 
     if customers is None:
-
         customers = Customer.objects.all()
 
     if hasattr(
@@ -1066,6 +1068,10 @@ def get_ml_dataframe():
 def make_json_safe(
     value
 ):
+    """
+    Convert NumPy, pandas and datetime values into JSON-safe
+    Python values.
+    """
 
     if isinstance(
         value,
@@ -1109,7 +1115,9 @@ def make_json_safe(
         np.generic
     ):
 
-        return value.item()
+        return make_json_safe(
+            value.item()
+        )
 
     if isinstance(
         value,
@@ -1142,6 +1150,9 @@ def make_json_safe(
 def figure_json(
     figure
 ):
+    """
+    Convert a Plotly figure to safe JSON.
+    """
 
     if figure is None:
         return "{}"
@@ -1210,6 +1221,8 @@ def dashboard(request):
             rfm_df[
                 "segment"
             ]
+            .fillna("")
+            .astype(str)
             .value_counts()
             .to_dict()
         )
@@ -1232,12 +1245,14 @@ def dashboard(request):
             ml_df[
                 "ml_segment"
             ]
+            .fillna("")
+            .astype(str)
             .value_counts()
             .to_dict()
         )
 
     # -----------------------------------------------------
-    # METRICS
+    # MAIN METRICS
     # -----------------------------------------------------
 
     at_risk_customers = (
@@ -1269,9 +1284,9 @@ def dashboard(request):
         )
     )
 
-    active_customers = max(
-        total_customers
-        - at_risk_customers,
+    # Use the actual ML segment for active customers.
+    active_customers = ml_counts.get(
+        ML_REGULAR_ACTIVE,
         0,
     )
 
@@ -1335,15 +1350,12 @@ def dashboard(request):
     # CATEGORY CHART
     # -----------------------------------------------------
 
-    category_df = (
-        df[
-            [
-                "preferred_category",
-                "total_spending",
-            ]
+    category_df = df[
+        [
+            "preferred_category",
+            "total_spending",
         ]
-        .copy()
-    )
+    ].copy()
 
     category_df[
         "preferred_category"
@@ -1353,6 +1365,7 @@ def dashboard(request):
         ]
         .fillna("Unknown")
         .astype(str)
+        .str.strip()
     )
 
     category_df[
@@ -1373,6 +1386,10 @@ def dashboard(request):
             "total_spending"
         ]
         .sum()
+        .sort_values(
+            "total_spending",
+            ascending=False,
+        )
     )
 
     category_fig = px.bar(
@@ -1382,6 +1399,7 @@ def dashboard(request):
         labels={
             "preferred_category":
                 "Category",
+
             "total_spending":
                 "Total Spending",
         },
@@ -1406,15 +1424,15 @@ def dashboard(request):
     # FREQUENCY CHART
     # -----------------------------------------------------
 
-    frequency_df = pd.to_numeric(
+    frequency_series = pd.to_numeric(
         df[
             "purchase_frequency"
         ],
         errors="coerce",
     )
 
-    frequency_df = (
-        frequency_df
+    frequency_series = (
+        frequency_series
         .replace(
             [
                 np.inf,
@@ -1427,11 +1445,12 @@ def dashboard(request):
     )
 
     frequency_fig = px.histogram(
-        x=frequency_df,
+        x=frequency_series,
         nbins=15,
         labels={
             "x":
                 "Purchase Frequency",
+
             "y":
                 "Customers",
         },
@@ -1486,6 +1505,7 @@ def dashboard(request):
         labels={
             "satisfaction":
                 "Satisfaction Score",
+
             "customers":
                 "Customers",
         },
@@ -1516,6 +1536,7 @@ def dashboard(request):
         ]
         .fillna("Unknown")
         .astype(str)
+        .str.strip()
     )
 
     gender_df = (
@@ -1546,6 +1567,10 @@ def dashboard(request):
         ),
     )
 
+    # -----------------------------------------------------
+    # CONTEXT
+    # -----------------------------------------------------
+
     context = {
 
         "total_customers":
@@ -1568,19 +1593,19 @@ def dashboard(request):
 
         "ml_at_risk_count":
             ml_counts.get(
-                "At Risk Customers",
+                ML_AT_RISK,
                 0,
             ),
 
         "ml_high_value_count":
             ml_counts.get(
-                "High-Value Customers",
+                ML_HIGH_VALUE,
                 0,
             ),
 
         "ml_regular_active_count":
             ml_counts.get(
-                "Regular Active Customers",
+                ML_REGULAR_ACTIVE,
                 0,
             ),
 
@@ -1926,7 +1951,7 @@ def customer_profile(
 
     customer = get_object_or_404(
         Customer,
-        customer_id=customer_id
+        customer_id=customer_id,
     )
 
     # =====================================================
@@ -1934,6 +1959,7 @@ def customer_profile(
     # =====================================================
 
     rfm_segment = ""
+
     recency = None
     frequency = None
     monetary = None
@@ -1970,10 +1996,6 @@ def customer_profile(
 
                 row = matching.iloc[0]
 
-                # -------------------------------------------------
-                # SEGMENT
-                # -------------------------------------------------
-
                 rfm_segment = row.get(
                     "segment",
                     ""
@@ -1983,10 +2005,6 @@ def customer_profile(
                     rfm_segment
                 ):
                     rfm_segment = ""
-
-                # -------------------------------------------------
-                # RFM RAW VALUES
-                # -------------------------------------------------
 
                 recency = row.get(
                     "recency",
@@ -2002,10 +2020,6 @@ def customer_profile(
                     "monetary",
                     None
                 )
-
-                # -------------------------------------------------
-                # RFM SCORES
-                # -------------------------------------------------
 
                 r_score = row.get(
                     "R_score",
@@ -2032,9 +2046,9 @@ def customer_profile(
                     None
                 )
 
-                # -------------------------------------------------
-                # CONVERT NUMPY/PANDAS VALUES
-                # -------------------------------------------------
+                # -----------------------------------------
+                # CLEAN NULL VALUES
+                # -----------------------------------------
 
                 if pd.isna(recency):
                     recency = None
@@ -2060,9 +2074,9 @@ def customer_profile(
                 if pd.isna(rfm_total):
                     rfm_total = None
 
-                # -------------------------------------------------
+                # -----------------------------------------
                 # CLEAN TYPES
-                # -------------------------------------------------
+                # -----------------------------------------
 
                 if recency is not None:
                     recency = int(
@@ -2143,10 +2157,6 @@ def customer_profile(
 
                 row = matching.iloc[0]
 
-                # -------------------------------------------------
-                # ML SEGMENT
-                # -------------------------------------------------
-
                 if "ml_segment" in ml_df.columns:
 
                     ml_segment = row.get(
@@ -2162,10 +2172,6 @@ def customer_profile(
                     ml_segment = str(
                         ml_segment
                     )
-
-                # -------------------------------------------------
-                # ML CLUSTER
-                # -------------------------------------------------
 
                 possible_cluster_columns = [
                     "cluster",
@@ -2187,7 +2193,6 @@ def customer_profile(
                         if not pd.isna(
                             value
                         ):
-
                             ml_cluster = value
 
                         break
@@ -2200,18 +2205,14 @@ def customer_profile(
         )
 
     # =====================================================
-    # FALLBACK ML SEGMENT
-    # =====================================================
-
-    if not ml_segment:
-
-        ml_segment = ""
-
-    # =====================================================
     # INSIGHTS
     # =====================================================
 
     insights = []
+
+    # -----------------------------------------------------
+    # SPENDING INSIGHT
+    # -----------------------------------------------------
 
     try:
 
@@ -2244,6 +2245,10 @@ def customer_profile(
             "This customer has relatively low spending."
         )
 
+    # -----------------------------------------------------
+    # FREQUENCY INSIGHT
+    # -----------------------------------------------------
+
     try:
 
         customer_frequency = int(
@@ -2274,6 +2279,10 @@ def customer_profile(
         insights.append(
             "Purchase frequency is relatively low."
         )
+
+    # -----------------------------------------------------
+    # SATISFACTION INSIGHT
+    # -----------------------------------------------------
 
     satisfaction = (
         customer.customer_satisfaction
@@ -2309,7 +2318,6 @@ def customer_profile(
             ValueError,
             TypeError,
         ):
-
             pass
 
     else:
@@ -2318,11 +2326,19 @@ def customer_profile(
             "Customer satisfaction data is not available."
         )
 
+    # -----------------------------------------------------
+    # RFM INSIGHT
+    # -----------------------------------------------------
+
     if rfm_segment:
 
         insights.append(
             f"RFM segment: {rfm_segment}."
         )
+
+    # -----------------------------------------------------
+    # ML INSIGHT
+    # -----------------------------------------------------
 
     if ml_segment:
 
@@ -2339,10 +2355,6 @@ def customer_profile(
         "customer":
             customer,
 
-        # -------------------------------------------------
-        # SEGMENTS
-        # -------------------------------------------------
-
         "rfm_segment":
             rfm_segment,
 
@@ -2351,10 +2363,6 @@ def customer_profile(
 
         "ml_cluster":
             ml_cluster,
-
-        # -------------------------------------------------
-        # RFM VALUES
-        # -------------------------------------------------
 
         "recency":
             recency,
@@ -2380,10 +2388,6 @@ def customer_profile(
         "RFM_total":
             rfm_total,
 
-        # -------------------------------------------------
-        # LOWERCASE ALIASES
-        # -------------------------------------------------
-
         "r_score":
             r_score,
 
@@ -2398,10 +2402,6 @@ def customer_profile(
 
         "rfm_total":
             rfm_total,
-
-        # -------------------------------------------------
-        # INSIGHTS
-        # -------------------------------------------------
 
         "insights":
             insights,
@@ -2517,17 +2517,11 @@ def analytics_dashboard(request):
     numeric_columns = [
 
         "age",
-
         "annual_income",
-
         "total_spending",
-
         "purchase_frequency",
-
         "average_order_value",
-
         "discount_usage",
-
         "customer_satisfaction",
     ]
 
@@ -2539,8 +2533,6 @@ def analytics_dashboard(request):
                 df[column],
                 errors="coerce",
             )
-
-    # Remove infinite values
 
     df = df.replace(
         [
@@ -2635,6 +2627,7 @@ def analytics_dashboard(request):
         labels={
             "spending_range":
                 "Spending Range",
+
             "customers":
                 "Customers",
         },
@@ -2716,6 +2709,7 @@ def analytics_dashboard(request):
         hover_name="name",
 
         hover_data={
+
             "customer_id":
                 True,
 
@@ -2764,7 +2758,6 @@ def analytics_dashboard(request):
         },
 
         title="Annual Income vs Total Spending",
-
     )
 
     median_income = (
@@ -2779,7 +2772,9 @@ def analytics_dashboard(request):
         ].median()
     )
 
-    if pd.notna(median_income):
+    if pd.notna(
+        median_income
+    ):
 
         income_fig.add_vline(
             x=median_income,
@@ -2788,7 +2783,9 @@ def analytics_dashboard(request):
             annotation_position="top",
         )
 
-    if pd.notna(median_spending):
+    if pd.notna(
+        median_spending
+    ):
 
         income_fig.add_hline(
             y=median_spending,
@@ -2827,7 +2824,6 @@ def analytics_dashboard(request):
             separatethousands=True,
             tickformat=",.0f",
         ),
-
     )
 
     # =====================================================
@@ -2836,29 +2832,29 @@ def analytics_dashboard(request):
     # =====================================================
 
     category_df = (
-    df[
-        [
-            "preferred_category",
-            "total_spending",
+        df[
+            [
+                "preferred_category",
+                "total_spending",
+            ]
         ]
-    ]
-    .dropna(
-        subset=[
+        .dropna(
+            subset=[
+                "total_spending"
+            ]
+        )
+        .groupby(
+            "preferred_category",
+            as_index=False,
+        )[
             "total_spending"
         ]
+        .sum()
+        .sort_values(
+            "total_spending",
+            ascending=False,
+        )
     )
-    .groupby(
-        "preferred_category",
-        as_index=False,
-    )[
-        "total_spending"
-    ]
-    .sum()
-    .sort_values(
-        "total_spending",
-        ascending=False,
-    )
-)
 
     category_fig = px.bar(
         category_df,
@@ -2867,6 +2863,7 @@ def analytics_dashboard(request):
         labels={
             "preferred_category":
                 "Category",
+
             "total_spending":
                 "Total Spending",
         },
@@ -2918,6 +2915,7 @@ def analytics_dashboard(request):
         labels={
             "x":
                 "Purchase Frequency",
+
             "y":
                 "Customers",
         },
@@ -2988,6 +2986,7 @@ def analytics_dashboard(request):
         labels={
             "satisfaction":
                 "Satisfaction Score",
+
             "customers":
                 "Customers",
         },
@@ -3073,6 +3072,7 @@ def analytics_dashboard(request):
         labels={
             "x":
                 "Age",
+
             "y":
                 "Customers",
         },
@@ -3120,6 +3120,7 @@ def analytics_dashboard(request):
         labels={
             "x":
                 "Discount Usage",
+
             "y":
                 "Customers",
         },
@@ -3438,75 +3439,96 @@ def export_customers_pdf(request):
 
             str(
                 customer.customer_id
-                or ""
+                if customer.customer_id is not None
+                else ""
             ),
 
             str(
                 customer.name
-                or ""
+                if customer.name is not None
+                else ""
             ),
 
             str(
                 customer.age
-                or ""
+                if customer.age is not None
+                else ""
             ),
 
             str(
                 customer.gender
-                or ""
+                if customer.gender is not None
+                else ""
             ),
 
             str(
                 customer.annual_income
-                or ""
+                if customer.annual_income is not None
+                else ""
             ),
 
             str(
                 customer.total_spending
-                or ""
+                if customer.total_spending is not None
+                else ""
             ),
 
             str(
                 customer.purchase_frequency
-                or ""
+                if customer.purchase_frequency is not None
+                else ""
             ),
 
             str(
                 customer.average_order_value
-                or ""
+                if customer.average_order_value is not None
+                else ""
             ),
 
             str(
                 customer.discount_usage
-                or ""
+                if customer.discount_usage is not None
+                else ""
             ),
 
             str(
                 customer.preferred_category
-                or ""
+                if customer.preferred_category is not None
+                else ""
             ),
 
             str(
                 customer.customer_satisfaction
-                or ""
+                if customer.customer_satisfaction is not None
+                else ""
             ),
 
             str(
                 getattr(
                     customer,
                     "rfm_segment",
-                    ""
+                    "",
                 )
-                or ""
+                if getattr(
+                    customer,
+                    "rfm_segment",
+                    "",
+                ) is not None
+                else ""
             ),
 
             str(
                 getattr(
                     customer,
                     "ml_segment",
-                    ""
+                    "",
                 )
-                or ""
+                if getattr(
+                    customer,
+                    "ml_segment",
+                    "",
+                ) is not None
+                else ""
             ),
         ])
 
@@ -3574,7 +3596,6 @@ def export_customers_pdf(request):
                     ),
                 ],
             ),
-
         ])
     )
 
@@ -3606,7 +3627,10 @@ def export_customers(request):
     Compatibility export endpoint.
 
     Keeps the existing analytics.urls.py working.
-    Defaults to CSV and supports ?format=pdf.
+
+    Defaults to CSV and supports:
+
+        ?format=pdf
     """
 
     export_format = (
