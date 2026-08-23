@@ -191,64 +191,63 @@ This allows analysis results to be used outside the web application.
 
 ## Project Structure
 
-```
 CustomerSeg/
 │
 ├── analytics/
-│   ├── management/
-│   │   └── commands/
-│   │       └── import_customers.py
-│   │
-│   ├── migrations/
-│   │
-│   ├── services/
-│   │   ├── cluster_evaluation.py
-│   │   ├── cluster_labeling.py
-│   │   ├── customer_insights.py
-│   │   ├── ml_segmentation.py
-│   │   ├── rfm_analysis.py
-│   │   ├── segmentation.py
-│   │   └── segment_insights.py
-│   │
-│   ├── templates/
-│   │   └── analytics/
-│   │       ├── analytics.html
-│   │       ├── base.html
-│   │       ├── customer_explorer.html
-│   │       ├── customer_profile.html
-│   │       └── dashboard.html
-│   │
-│   ├── models.py
-│   ├── urls.py
-│   └── views.py
+│ ├── management/
+│ │ └── commands/
+│ │ └── import_customers.py
+│ │
+│ ├── migrations/
+│ │
+│ ├── services/
+│ │ ├── cluster_evaluation.py
+│ │ ├── cluster_labeling.py
+│ │ ├── customer_insights.py
+│ │ ├── ml_segmentation.py
+│ │ ├── rfm_analysis.py
+│ │ ├── segmentation.py
+│ │ └── segment_insights.py
+│ │
+│ ├── templates/
+│ │ └── analytics/
+│ │ ├── analytics.html
+│ │ ├── base.html
+│ │ ├── customer_explorer.html
+│ │ ├── customer_profile.html
+│ │ └── dashboard.html
+│ │
+│ ├── models.py
+│ ├── urls.py
+│ └── views.py
 │
 ├── config/
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
+│ ├── settings.py
+│ ├── urls.py
+│ ├── asgi.py
+│ └── wsgi.py
 │
 ├── data/
-│   ├── customers.csv
-│   └── generate_dataset.py
+│ ├── customers.csv
+│ └── generate_dataset.py
 │
 ├── screenshots/
-│   ├── dashboard-overview.png
-│   ├── dashboard-segmentation-charts.png
-│   ├── dashboard-satisfaction-gender.png
-│   ├── customer-explorer.png
-│   ├── customer-profile.png
-│   ├── customer-rfm-analysis.png
-│   ├── analytics-overview.png
-│   ├── analytics-income-vs-spending.png
-│   ├── analytics-category-frequency.png
-│   └── analytics-age-discount.png
+│ ├── dashboard-overview.png
+│ ├── dashboard-segmentation-charts.png
+│ ├── dashboard-satisfaction-gender.png
+│ ├── customer-explorer.png
+│ ├── customer-profile.png
+│ ├── customer-rfm-analysis.png
+│ ├── analytics-overview.png
+│ ├── analytics-income-vs-spending.png
+│ ├── analytics-category-frequency.png
+│ └── analytics-age-discount.png
 │
 ├── manage.py
 ├── README.md
 ├── requirements.txt
 └── .gitignore
-```
+
 
 ---
 
@@ -256,56 +255,48 @@ CustomerSeg/
 
 ### 1. Clone the repository
 
-```
 git clone https://github.com/Skyscrappersam/customer-segmentation.git
 cd customer-segmentation
-```
+
 
 ### 2. Create a virtual environment
 
 On Windows:
 
-```
 python -m venv .venv
-```
+
 
 Activate it:
 
-```
-.\.venv\Scripts\Activate.ps1
-```
+..venv\Scripts\Activate.ps1
+
 
 ### 3. Install dependencies
 
-```
 pip install -r requirements.txt
-```
+
 
 ### 4. Apply database migrations
 
-```
 python manage.py migrate
-```
+
 
 ### 5. Import customer data
 
 If the database needs to be populated from the included dataset:
 
-```
 python manage.py import_customers data/customers.csv
-```
+
 
 ### 6. Run the development server
 
-```
 python manage.py runserver
-```
+
 
 Open the application in your browser:
 
-```
 http://127.0.0.1:8000/analytics/
-```
+
 
 ---
 
@@ -324,27 +315,26 @@ http://127.0.0.1:8000/analytics/
 
 The application follows this general workflow:
 
-```
 Customer Dataset
-      ↓
+↓
 Data Import
-      ↓
+↓
 Data Cleaning & Preparation
-      ↓
+↓
 RFM Analysis
-      ↓
+↓
 Customer Segmentation
-      ↓
+↓
 K-Means Clustering
-      ↓
+↓
 Cluster Profiling & Labeling
-      ↓
+↓
 Analytics Dashboard
-      ↓
+↓
 Customer Explorer & Profiles
-      ↓
+↓
 CSV / PDF Export
-```
+
 
 ---
 
