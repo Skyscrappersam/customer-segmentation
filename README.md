@@ -1,5 +1,10 @@
 # CustomerSeg - Customer Analytics & Segmentation System
 
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-5.x-092E20?logo=django&logoColor=white)
+![License](https://img.shields.io/badge/License-Educational-lightgrey)
+![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+
 ## Project Overview
 
 **CustomerSeg** is a Django-based customer analytics and segmentation web application developed to analyze customer behaviour, identify valuable and at-risk customers, and support data-driven business decisions.
@@ -340,6 +345,22 @@ Customer Explorer & Profiles
       ↓
 CSV / PDF Export
 ```
+
+---
+
+## Future Improvements
+
+Planned or potential enhancements for future versions of this project:
+
+* 🔐 User authentication and role-based access (e.g. viewer vs. admin permissions)
+* 🌐 Deployment to a live hosting platform for public demo access
+* 📉 Customer churn prediction using historical purchase trends
+* 🔔 Automated alerts for customers shifting into "At Risk" or "Lost" segments
+* 🧮 Configurable RFM scoring thresholds (currently fixed logic)
+* 📊 Additional chart types (cohort analysis, retention curves)
+* 🧪 Automated test coverage for segmentation and RFM calculation logic
+* 🌍 Multi-currency support beyond INR
+* 📱 Further mobile UI refinements
 
 ---
 
