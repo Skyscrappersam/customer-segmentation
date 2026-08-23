@@ -1,662 +1,371 @@
-\# CustomerSeg - Customer Analytics \& Segmentation System
+# CustomerSeg - Customer Analytics & Segmentation System
 
+## Project Overview
 
+**CustomerSeg** is a Django-based customer analytics and segmentation web application developed to analyze customer behaviour, identify valuable and at-risk customers, and support data-driven business decisions.
 
-\## Project Overview
-
-
-
-\*\*CustomerSeg\*\* is a Django-based customer analytics and segmentation web application developed to analyze customer behaviour, identify valuable and at-risk customers, and support data-driven business decisions.
-
-
-
-The system combines traditional \*\*RFM (Recency, Frequency, Monetary) analysis\*\* with \*\*K-Means machine learning clustering\*\* to divide customers into meaningful segments.
-
-
+The system combines traditional **RFM (Recency, Frequency, Monetary) analysis** with **K-Means machine learning clustering** to divide customers into meaningful segments.
 
 The application provides an interactive analytics dashboard, customer exploration tools, individual customer profiles, segmentation insights, and data export functionality.
 
+---
 
+## Key Features
 
-\---
+* 📊 Interactive customer analytics dashboard
+* 👥 Customer Explorer with search and filtering
+* 🔎 Individual customer profile pages
+* 📈 RFM-based customer segmentation
+* 🤖 K-Means machine learning segmentation
+* 🏷️ Automatic customer segment labeling
+* 💰 Customer spending and purchasing behaviour analysis
+* ⭐ Customer satisfaction analysis
+* 🔄 Customer sorting and pagination
+* 📄 CSV export
+* 📑 PDF export
+* 🛠️ Django Admin integration
+* 🧹 Handling of missing customer data
+* 📱 Responsive web interface
+* 📊 Plotly-based analytics visualizations
 
+---
 
+## Customer Segmentation
 
-\## Key Features
-
-
-
-\* 📊 Interactive customer analytics dashboard
-
-\* 👥 Customer Explorer with search and filtering
-
-\* 🔎 Individual customer profile pages
-
-\* 📈 RFM-based customer segmentation
-
-\* 🤖 K-Means machine learning segmentation
-
-\* 🏷️ Automatic customer segment labeling
-
-\* 💰 Customer spending and purchasing behaviour analysis
-
-\* ⭐ Customer satisfaction analysis
-
-\* 🔄 Customer sorting and pagination
-
-\* 📄 CSV export
-
-\* 📑 PDF export
-
-\* 🛠️ Django Admin integration
-
-\* 🧹 Handling of missing customer data
-
-\* 📱 Responsive web interface
-
-\* 📊 Plotly-based analytics visualizations
-
-
-
-\---
-
-
-
-\## Customer Segmentation
-
-
-
-\### RFM Analysis
-
-
+### RFM Analysis
 
 Customer behaviour is analyzed using three important RFM dimensions:
 
-
-
-\* \*\*Recency\*\* - How recently a customer made a purchase
-
-\* \*\*Frequency\*\* - How frequently a customer makes purchases
-
-\* \*\*Monetary\*\* - How much a customer spends
-
-
+* **Recency** - How recently a customer made a purchase
+* **Frequency** - How frequently a customer makes purchases
+* **Monetary** - How much a customer spends
 
 Based on these characteristics, customers are assigned meaningful RFM segments.
 
+### Machine Learning Segmentation
 
-
-\### Machine Learning Segmentation
-
-
-
-The project also uses \*\*K-Means clustering\*\* to discover customer groups based on behavioural characteristics.
-
-
+The project also uses **K-Means clustering** to discover customer groups based on behavioural characteristics.
 
 The resulting clusters are profiled and assigned business-friendly labels such as:
 
-
-
-\* \*\*High-Value Customers\*\*
-
-\* \*\*At Risk Customers\*\*
-
-\* \*\*Regular Active Customers\*\*
-
-
+* **High-Value Customers**
+* **At Risk Customers**
+* **Regular Active Customers**
 
 This combination of RFM analysis and machine learning provides both interpretable business segmentation and data-driven customer grouping.
 
+---
 
-
-\---
-
-
-
-\## Analytics Dashboard
-
-
+## Analytics Dashboard
 
 The main dashboard provides an overview of customer behaviour and segmentation.
 
-
-
 It includes metrics such as:
 
-
-
-\* Total Customers
-
-\* Active Customers
-
-\* At Risk Customers
-
-\* High-Value Customers
-
-\* Total Spending
-
-\* Average Spending
-
-\* RFM Segmentation
-
-\* Machine Learning Segmentation
-
-
+* Total Customers
+* Active Customers
+* At Risk Customers
+* High-Value Customers
+* Total Spending
+* Average Spending
+* RFM Segmentation
+* Machine Learning Segmentation
 
 The dashboard also provides navigation to detailed customer and analytics pages.
 
+![Customer Analytics Dashboard overview showing total customers, at-risk customers, high-value customers, active customers, total spending and average spending](screenshots/dashboard-overview.png)
+*Dashboard overview — key metrics at a glance.*
 
+![RFM Customer Segmentation and Machine Learning Customer Segmentation bar charts](screenshots/dashboard-segmentation-charts.png)
+*RFM segments vs. machine-learning segments, compared side by side.*
 
-\---
+![Customer Satisfaction Distribution and Customer Gender Distribution charts](screenshots/dashboard-satisfaction-gender.png)
+*Satisfaction score distribution and gender split across the customer base.*
 
+---
 
-
-\## Customer Explorer
-
-
+## Customer Explorer
 
 The Customer Explorer allows users to examine customers individually and collectively.
 
-
-
 Available functionality includes:
 
+* Customer search
+* Segment filtering
+* Machine learning segment filtering
+* Spending-based sorting
+* Customer satisfaction filtering
+* Pagination
+* Customer profile navigation
 
+![Customer Explorer page with search filters, quick filters, export buttons and the customer table](screenshots/customer-explorer.png)
+*Search, filter, sort, and export customer data — all from one screen.*
 
-\* Customer search
+---
 
-\* Segment filtering
-
-\* Machine learning segment filtering
-
-\* Spending-based sorting
-
-\* Customer satisfaction filtering
-
-\* Pagination
-
-\* Customer profile navigation
-
-
-
-\---
-
-
-
-\## Customer Profiles
-
-
+## Customer Profiles
 
 Each customer has a dedicated profile page containing relevant information such as:
 
-
-
-\* Customer ID
-
-\* Customer name
-
-\* Total spending
-
-\* Purchase frequency
-
-\* Customer satisfaction
-
-\* Preferred category
-
-\* RFM segment
-
-\* Machine learning segment
-
-
+* Customer ID
+* Customer name
+* Total spending
+* Purchase frequency
+* Customer satisfaction
+* Preferred category
+* RFM segment
+* Machine learning segment
 
 This allows individual customers to be investigated in greater detail.
 
+![Individual customer profile page showing spending, purchase frequency, satisfaction and annual income](screenshots/customer-profile.png)
+*Individual customer profile with key performance indicators.*
 
+![RFM Analysis breakdown for an individual customer including recency, frequency, monetary and RFM scores](screenshots/customer-rfm-analysis.png)
+*Detailed RFM scoring and behavioural analysis for a single customer.*
 
-\---
+---
 
+## Advanced Analytics
 
+The Advanced Analytics page provides deeper insight into customer spending, income, purchasing behaviour, satisfaction, demographics, and discount usage.
 
-\## Data Export
+![Advanced Customer Analytics header showing total customers, total spending, average spending and average income](screenshots/analytics-overview.png)
+*High-level analytics summary.*
 
+![Customer Spending Distribution bar chart and Annual Income vs Total Spending bubble chart](screenshots/analytics-income-vs-spending.png)
+*Income vs. spending bubble chart — bubble size represents purchase frequency, colour represents satisfaction.*
 
+![Total Spending by Category and Purchase Frequency Distribution charts](screenshots/analytics-category-frequency.png)
+*Spending broken down by product category, alongside purchase frequency distribution.*
+
+![Customer Age Distribution and Discount Usage Distribution charts](screenshots/analytics-age-discount.png)
+*Age demographics and discount usage patterns across the customer base.*
+
+---
+
+## Data Export
 
 The application supports exporting customer analytics data in:
 
-
-
-\* \*\*CSV format\*\*
-
-\* \*\*PDF format\*\*
-
-
+* **CSV format**
+* **PDF format**
 
 This allows analysis results to be used outside the web application.
 
+---
 
+## Technologies Used
 
-\---
+### Backend
+* Python
+* Django
 
+### Data Analysis & Machine Learning
+* Pandas
+* NumPy
+* Scikit-learn
 
+### Visualization
+* Plotly
 
-\## Technologies Used
+### Frontend
+* HTML
+* CSS
+* JavaScript
 
+### Database
+* SQLite
 
+### Development Tools
+* Git
+* GitHub
+* Python Virtual Environment
 
-\### Backend
+---
 
+## Project Structure
 
-
-\* Python
-
-\* Django
-
-
-
-\### Data Analysis \& Machine Learning
-
-
-
-\* Pandas
-
-\* NumPy
-
-\* Scikit-learn
-
-
-
-\### Visualization
-
-
-
-\* Plotly
-
-
-
-\### Frontend
-
-
-
-\* HTML
-
-\* CSS
-
-\* JavaScript
-
-
-
-\### Database
-
-
-
-\* SQLite
-
-
-
-\### Development Tools
-
-
-
-\* Git
-
-\* GitHub
-
-\* Python Virtual Environment
-
-
-
-\---
-
-
-
-\## Project Structure
-
-
-
-```text
-
+```
 CustomerSeg/
-
 │
-
 ├── analytics/
-
 │   ├── management/
-
 │   │   └── commands/
-
-│   │       └── import\_customers.py
-
+│   │       └── import_customers.py
 │   │
-
 │   ├── migrations/
-
 │   │
-
 │   ├── services/
-
-│   │   ├── cluster\_evaluation.py
-
-│   │   ├── cluster\_labeling.py
-
-│   │   ├── customer\_insights.py
-
-│   │   ├── ml\_segmentation.py
-
-│   │   ├── rfm\_analysis.py
-
+│   │   ├── cluster_evaluation.py
+│   │   ├── cluster_labeling.py
+│   │   ├── customer_insights.py
+│   │   ├── ml_segmentation.py
+│   │   ├── rfm_analysis.py
 │   │   ├── segmentation.py
-
-│   │   └── segment\_insights.py
-
+│   │   └── segment_insights.py
 │   │
-
 │   ├── templates/
-
 │   │   └── analytics/
-
 │   │       ├── analytics.html
-
 │   │       ├── base.html
-
-│   │       ├── customer\_explorer.html
-
-│   │       ├── customer\_profile.html
-
+│   │       ├── customer_explorer.html
+│   │       ├── customer_profile.html
 │   │       └── dashboard.html
-
 │   │
-
 │   ├── models.py
-
 │   ├── urls.py
-
 │   └── views.py
-
 │
-
 ├── config/
-
 │   ├── settings.py
-
 │   ├── urls.py
-
 │   ├── asgi.py
-
 │   └── wsgi.py
-
 │
-
 ├── data/
-
 │   ├── customers.csv
-
-│   └── generate\_dataset.py
-
+│   └── generate_dataset.py
 │
-
+├── screenshots/
+│   ├── dashboard-overview.png
+│   ├── dashboard-segmentation-charts.png
+│   ├── dashboard-satisfaction-gender.png
+│   ├── customer-explorer.png
+│   ├── customer-profile.png
+│   ├── customer-rfm-analysis.png
+│   ├── analytics-overview.png
+│   ├── analytics-income-vs-spending.png
+│   ├── analytics-category-frequency.png
+│   └── analytics-age-discount.png
+│
 ├── manage.py
-
 ├── README.md
-
 ├── requirements.txt
-
 └── .gitignore
-
 ```
 
+---
 
+## Installation and Setup
 
-\---
+### 1. Clone the repository
 
-
-
-\## Installation and Setup
-
-
-
-\### 1. Clone the repository
-
-
-
-```bash
-
+```
 git clone https://github.com/Skyscrappersam/customer-segmentation.git
-
 cd customer-segmentation
-
 ```
 
-
-
-\### 2. Create a virtual environment
-
-
+### 2. Create a virtual environment
 
 On Windows:
 
-
-
-```powershell
-
-python -m venv .venv
-
 ```
-
-
+python -m venv .venv
+```
 
 Activate it:
 
-
-
-```powershell
-
-.\\.venv\\Scripts\\Activate.ps1
-
+```
+.\.venv\Scripts\Activate.ps1
 ```
 
+### 3. Install dependencies
 
-
-\### 3. Install dependencies
-
-
-
-```powershell
-
+```
 pip install -r requirements.txt
-
 ```
 
+### 4. Apply database migrations
 
-
-\### 4. Apply database migrations
-
-
-
-```powershell
-
+```
 python manage.py migrate
-
 ```
 
-
-
-\### 5. Import customer data
-
-
+### 5. Import customer data
 
 If the database needs to be populated from the included dataset:
 
-
-
-```powershell
-
-python manage.py import\_customers data/customers.csv
-
+```
+python manage.py import_customers data/customers.csv
 ```
 
+### 6. Run the development server
 
-
-\### 6. Run the development server
-
-
-
-```powershell
-
+```
 python manage.py runserver
-
 ```
-
-
 
 Open the application in your browser:
 
-
-
-```text
-
+```
 http://127.0.0.1:8000/analytics/
-
 ```
 
+---
 
+## Main Application Pages
 
-\---
+| Page | Purpose |
+|---|---|
+| `/analytics/` | Main analytics dashboard |
+| `/analytics/customers/` | Customer Explorer |
+| `/analytics/customers/<customer_id>/` | Individual customer profile |
+| `/analytics/analytics/` | Advanced Analytics |
 
+---
 
-
-\## Main Application Pages
-
-
-
-| Page                                  | Purpose                     |
-
-| ------------------------------------- | --------------------------- |
-
-| `/analytics/`                         | Main analytics dashboard    |
-
-| `/analytics/customers/`               | Customer Explorer           |
-
-| `/analytics/customers/<customer\_id>/` | Individual customer profile |
-
-| `/analytics/analytics/`               | Advanced Analytics          |
-
-
-
-\---
-
-
-
-\## Data Processing Workflow
-
-
+## Data Processing Workflow
 
 The application follows this general workflow:
 
-
-
-```text
-
+```
 Customer Dataset
-
-&#x20;      ↓
-
+      ↓
 Data Import
-
-&#x20;      ↓
-
-Data Cleaning \& Preparation
-
-&#x20;      ↓
-
+      ↓
+Data Cleaning & Preparation
+      ↓
 RFM Analysis
-
-&#x20;      ↓
-
+      ↓
 Customer Segmentation
-
-&#x20;      ↓
-
+      ↓
 K-Means Clustering
-
-&#x20;      ↓
-
-Cluster Profiling \& Labeling
-
-&#x20;      ↓
-
+      ↓
+Cluster Profiling & Labeling
+      ↓
 Analytics Dashboard
-
-&#x20;      ↓
-
-Customer Explorer \& Profiles
-
-&#x20;      ↓
-
+      ↓
+Customer Explorer & Profiles
+      ↓
 CSV / PDF Export
-
 ```
 
+---
 
-
-\---
-
-
-
-\## Project Purpose
-
-
+## Project Purpose
 
 This project was developed as an individual academic/internship project to demonstrate practical implementation of:
 
+* Web application development using Django
+* Data analysis using Pandas and NumPy
+* Customer segmentation using RFM analysis
+* Machine learning using K-Means clustering
+* Data visualization using Plotly
+* Database management using SQLite
+* Data export functionality
+* Git and GitHub based project management
 
+---
 
-\* Web application development using Django
+## Author
 
-\* Data analysis using Pandas and NumPy
+**Suraj Sharma**
 
-\* Customer segmentation using RFM analysis
+GitHub: [https://github.com/Skyscrappersam](https://github.com/Skyscrappersam)
 
-\* Machine learning using K-Means clustering
+---
 
-\* Data visualization using Plotly
-
-\* Database management using SQLite
-
-\* Data export functionality
-
-\* Git and GitHub based project management
-
-
-
-\---
-
-
-
-\## Author
-
-
-
-\*\*Suraj Sharma\*\*
-
-
-
-GitHub:
-
-https://github.com/Skyscrappersam
-
-
-
-\---
-
-
-
-\## License
-
-
+## License
 
 This project was developed for educational and academic purposes.
-
-
-
